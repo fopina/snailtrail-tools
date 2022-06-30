@@ -1,8 +1,9 @@
 name: collect
 
-on: 
-  schedule:
-    - cron: "*/5 * * * *"
+on:
+  # UNRELIABLE
+  # schedule:
+  #  - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
 
