@@ -2966,6 +2966,10 @@ label {
   margin-bottom: 20px;
 }
 
+.users .col-xl-6 {
+  margin-bottom: 20px;
+}
+
 .users-item {
   position: relative;
   display: -webkit-box;
