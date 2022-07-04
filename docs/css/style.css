@@ -2644,6 +2644,10 @@ label {
   height: 100%;
 }
 
+.stat-cards-item a {
+  text-decoration: underline;
+}
+
 .stat-cards-icon {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -2963,6 +2967,10 @@ label {
 }
 
 .users .col-xl-3 {
+  margin-bottom: 20px;
+}
+
+.users .col-xl-9 {
   margin-bottom: 20px;
 }
 
