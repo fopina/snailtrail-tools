@@ -6,6 +6,15 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+function _unpackLogBin(data) {
+  let points = [];
+  let x = new DataView(data);
+  for (var i = 0; i < data.byteLength; i += 6) {
+    points.push({x: x.getUint32(i, false) * 1000, y: x.getUint16(i+4, false)});
+  }
+  return points;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
@@ -313,15 +322,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var ctx = document.getElementById('myChart');
 
     if (ctx) {
-      fetch("https://raw.githubusercontent.com/fopina/snailtrail-tools/data/log.txt")
-      .then(response => response.text())
-      .then(data => data.trim().split("\n").map(x => x.split(' ')))
-      .then(data => data.map(x => {
-        return {
-          x: `20${x[0]}`.replace('T', ' '),
-          y: parseInt(x[1]) / 1000
-        }
-      }))
+      fetch("https://raw.githubusercontent.com/fopina/snailtrail-tools/data/log.bin")
+      .then(response => response.arrayBuffer())
+      .then(data => _unpackLogBin(data))
       .then(points => {
         var myCanvas = ctx.getContext('2d');
         var myChart = new Chart(ctx, {

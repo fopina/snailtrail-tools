@@ -23,11 +23,11 @@ jobs:
       - run: pip install -r requirements.txt
       - name: get coefficient
         run: |
-          python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} -o data/log.txt
+          python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
       - name: push data
         run: |
           cd data
-          git config user.email updater@devnull.com
+          git config user.email updater@devnull.localhost
           git config user.name Updater
           git commit log.txt -m update
           git push
