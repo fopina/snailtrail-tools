@@ -29,5 +29,5 @@ jobs:
           cd data
           git config user.email updater@devnull.localhost
           git config user.name Updater
-          git commit log.txt -m update
+          git commit log.bin -m update
           git push
