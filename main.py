@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime
 import struct
 from snail import Client
 
@@ -23,7 +23,7 @@ def main(argv=None):
     c = int(c / 1000000000000000)
     print(f'Current coefficent: {c / 1000}')
     if args.output:
-        now = datetime.now(tz=timezone.utc)
+        now = datetime.utcnow()
         print(now)
         if args.binary_log:
             with args.output.open('ab') as f:
