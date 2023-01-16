@@ -346,4 +346,14 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
   })();
+
+  (function() {
+    document.getElementById('copyBtn').addEventListener('click', function () {
+      let text = document.getElementById("donationWallet").innerText;
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          alert('Address copied to clipboard, thank you!');
+        });
+    });
+  })();
 });
