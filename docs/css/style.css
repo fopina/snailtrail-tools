@@ -4310,3 +4310,12 @@ label {
     flex-direction: column;
   }
 }
+
+#donationWallet {
+  word-break: break-all;
+}
+@media (min-width: 500px) {
+  #donationWallet {
+    word-break: normal;
+  }
+}
