@@ -1,4 +1,5 @@
 "use strict";
+let cchart;
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() { }; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -13,6 +14,12 @@ function _unpackLogBin(data) {
     points.push({ x: x.getUint32(i, false) * 1000, y: x.getUint16(i + 4, false) });
   }
   return points;
+}
+
+function _dateRangeChanged() {
+  cchart.options.scales.x.min = new Date(document.getElementById('startDate').value);
+  cchart.options.scales.x.max = new Date(document.getElementById('endDate').value);
+  cchart.update();
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -295,26 +302,6 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 
   (function () {
-    /* Add gradient to chart */
-    var width, height, gradient;
-
-    function getGradient(ctx, chartArea) {
-      var chartWidth = chartArea.right - chartArea.left;
-      var chartHeight = chartArea.bottom - chartArea.top;
-
-      if (gradient === null || width !== chartWidth || height !== chartHeight) {
-        width = chartWidth;
-        height = chartHeight;
-        gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-        gradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
-        gradient.addColorStop(1, 'rgba(255, 255, 255, 0.4)');
-      }
-
-      return gradient;
-    }
-    /* Visitors chart */
-
-
     var ctx = document.getElementById('myChart');
 
     if (ctx) {
@@ -322,7 +309,18 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.arrayBuffer())
         .then(data => _unpackLogBin(data))
         .then(points => {
-          new Chart(ctx, {
+          const minDate = new Date(points[0].x).toISOString().split('T')[0];
+          const maxDate = new Date(points.slice(-1)[0].x).toISOString().split('T')[0];
+          // default view to last 7 days
+          const initialFromDate = new Date();
+          initialFromDate.setDate(new Date(points.slice(-1)[0].x).getDate() - 7);
+          document.getElementById("startDate").setAttribute("min", minDate);
+          document.getElementById("startDate").setAttribute("max", maxDate);
+          document.getElementById("startDate").value = initialFromDate.toISOString().split('T')[0];
+          document.getElementById("endDate").setAttribute("min", minDate);
+          document.getElementById("endDate").setAttribute("max", maxDate);
+          document.getElementById("endDate").value = maxDate;
+          cchart = new Chart(ctx, {
             type: 'line',
             data: {
               datasets: [{
@@ -331,12 +329,14 @@ document.addEventListener('DOMContentLoaded', function () {
               }],
             },
             options: {
+              responsive: true,
               scales: {
                 x: {
                   type: 'time',
                   time: {
                     unit: 'day'
-                  }
+                  },
+                  min: initialFromDate,
                 }
               }
             }
@@ -354,6 +354,12 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(() => {
           alert('Address copied to clipboard, thank you!');
         });
+    });
+    document.getElementById('startDate').addEventListener('change', function() {
+      _dateRangeChanged();
+    });
+    document.getElementById('endDate').addEventListener('change', function() {
+      _dateRangeChanged();
     });
   })();
 });
