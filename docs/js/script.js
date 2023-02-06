@@ -320,13 +320,21 @@ document.addEventListener('DOMContentLoaded', function () {
           document.getElementById("endDate").setAttribute("min", minDate);
           document.getElementById("endDate").setAttribute("max", maxDate);
           document.getElementById("endDate").value = maxDate;
+          const points24 = points.map(({x, y}) => {return {x: x + 86400000, y: y};});
           cchart = new Chart(ctx, {
             type: 'line',
             data: {
-              datasets: [{
-                label: 'Coefficent',
-                data: points
-              }],
+              datasets: [
+                {
+                  label: 'Coefficent',
+                  data: points
+                },
+                {
+                  label: '24h Delta',
+                  data: points24,
+                  backgroundColor: 'yellow'
+                }
+              ]
             },
             options: {
               responsive: true,
