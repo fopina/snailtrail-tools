@@ -3,7 +3,7 @@ name: collect
 on:
   schedule:
     # scheduling is unreliable - every minute means every 15 to 30min actually - good enough
-    - cron: "*/10 * * * *"
+    - cron: "*/30 * * * *"
   # workflow_dispatch:
   #   inputs:
 
