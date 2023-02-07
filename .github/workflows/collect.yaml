@@ -1,11 +1,11 @@
 name: collect
 
 on:
-  # UNRELIABLE
-  # schedule:
-  #  - cron: "*/5 * * * *"
-  workflow_dispatch:
-    inputs:
+  schedule:
+    # scheduling is unreliable - every minute means every 15 to 30min actually - good enough
+    - cron: "* * * * *"
+  # workflow_dispatch:
+  #   inputs:
 
 jobs:
   collect:
