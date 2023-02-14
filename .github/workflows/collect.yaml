@@ -4,8 +4,8 @@ on:
   schedule:
     # scheduling is unreliable - every minute means every 15 to 30min actually - good enough
     - cron: "*/30 * * * *"
-  # workflow_dispatch:
-  #   inputs:
+  workflow_dispatch:
+    # allow manual triggering
 
 jobs:
   collect:
@@ -26,12 +26,15 @@ jobs:
           python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
       - name: get population
         run: |
-          python main_gql.py --binary-log -o data/pop.bin
+          python main_pop.py --binary-log -o data/pop.bin
+      - name: get burn coefficient
+        run: |
+          python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
       - name: push data
         run: |
           cd data
-          git add log.bin pop.bin
+          git add log.bin pop.bin burn.bin
           git config user.email updater@devnull.localhost
           git config user.name Updater
-          git commit log.bin pop.bin -m update
+          git commit log.bin pop.bin burn.bin -m update
           git push

@@ -5,10 +5,30 @@ import atexit
 GQL_MARKETPLACE = '''
 query getAllSnail {
   marketplace_promise {
+    ... on Problem {
+        problem
+    }
     ... on Snails {
-    count  
+        count  
     }
   }
+}
+'''
+
+GQL_BURN = '''
+query microwave_promise($params: MicrowaveParams) {
+    microwave_promise(params: $params) {
+        ... on Problem {
+            problem
+        }
+        ... on GenericResponse {
+            payload {
+                ... on MicrowavePayload {
+                    coef
+                }
+            }
+        }
+    }
 }
 '''
 
@@ -17,7 +37,12 @@ class Client(requests.Session):
         super().__init__()
         self.url = url
     
-    def query(self, operation, variables, query):
+    def query(self, operation, variables, query, auth=None):
+        kw = {}
+        if auth:
+            kw['headers'] = {
+                'Auth': auth
+            }
         r = self.post(
             self.url,
             json={
@@ -25,6 +50,7 @@ class Client(requests.Session):
                 'variables': variables,
                 'query': query,
             },
+            **kw
         )
         r.raise_for_status()
         r = r.json()
@@ -37,6 +63,21 @@ class Client(requests.Session):
 
     def marketplace_count(self):
         return int(self.query('getAllSnail', {}, GQL_MARKETPLACE)['marketplace_promise']['count'])
+    
+    def burn_coef(self, token_id: int, signature: str, address: str, auth: str):
+        return self.query(
+            'microwave_promise',
+            {
+                'params': {
+                    'token_ids':[token_id],
+                    'signature': signature,
+                    'address': address,
+                    'use_scroll': False
+                }
+            },
+            GQL_BURN,
+            auth=auth,
+        )
 
 
 def proxied_client():
