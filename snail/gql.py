@@ -77,7 +77,7 @@ class Client(requests.Session):
             },
             GQL_BURN,
             auth=auth,
-        )
+        )['microwave_promise']['payload']['coef']
 
 
 def proxied_client():
