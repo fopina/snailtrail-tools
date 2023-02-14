@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 import argparse
 from pathlib import Path
-import subprocess
-import atexit
-import datetime
+from datetime import datetime
 import struct
 from snail.gql import proxied_client
 
