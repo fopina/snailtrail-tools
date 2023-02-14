@@ -24,10 +24,14 @@ jobs:
       - name: get coefficient
         run: |
           python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
+      - name: get population
+        run: |
+          python main_gql.py --binary-log -o data/pop.bin
       - name: push data
         run: |
           cd data
+          git add log.bin pop.bin
           git config user.email updater@devnull.localhost
           git config user.name Updater
-          git commit log.bin -m update
+          git commit log.bin pop.bin -m update
           git push
