@@ -27,9 +27,9 @@ jobs:
       - name: get population
         run: |
           python main_pop.py --binary-log -o data/pop.bin
-      - name: get burn coefficient
-        run: |
-          python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
+      # - name: get burn coefficient
+      #  run: |
+      #    python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
       - name: push data
         run: |
           cd data
