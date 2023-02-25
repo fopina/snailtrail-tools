@@ -2,6 +2,8 @@ import requests
 import subprocess
 import atexit
 
+# status: 3 means "alive and not working"
+# no status == 3 + 5
 GQL_MARKETPLACE = '''
 query getAllSnail {
   alive: marketplace_promise {
