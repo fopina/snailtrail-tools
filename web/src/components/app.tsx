@@ -6,12 +6,14 @@ import { Route, Router } from 'preact-router';
 import Home from '../routes/home';
 import Header from './header';
 
+import baseroute from '../baseroute';
+
 const App = () => (
 	<div id="app">
 		<Header />
 		<main>
 			<Router>
-				<Route path="/" component={Home} />
+				<Route path={baseroute + "/"} component={Home} />
 			</Router>
 		</main>
 	</div>
