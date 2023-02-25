@@ -29,10 +29,10 @@ def main(argv=None):
             if args.binary_log:
                 with pop_file.open('ab') as f:
                     f.write(struct.pack('>I', int(now.timestamp())))
-                    f.write(struct.pack('>H', pop))
+                    f.write(struct.pack('>H', v))
             else:
                 with pop_file.open('a') as f:
-                    f.write(f'{now:%y-%m-%dT%H:%M:%S} {pop}\n')
+                    f.write(f'{now:%y-%m-%dT%H:%M:%S} {v}\n')
 
 
 if __name__ == '__main__':
