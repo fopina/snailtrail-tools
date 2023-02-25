@@ -24,13 +24,15 @@ def main(argv=None):
     if args.output:
         now = datetime.utcnow()
         print(now)
-        if args.binary_log:
-            with args.output.open('ab') as f:
-                f.write(struct.pack('>I', int(now.timestamp())))
-                f.write(struct.pack('>H', pop))
-        else:
-            with args.output.open('a') as f:
-                f.write(f'{now:%y-%m-%dT%H:%M:%S} {pop}\n')
+        for k, v in pop.items():
+            pop_file = args.output.with_suffix(f'.{k}{args.output.suffix}')
+            if args.binary_log:
+                with pop_file.open('ab') as f:
+                    f.write(struct.pack('>I', int(now.timestamp())))
+                    f.write(struct.pack('>H', pop))
+            else:
+                with pop_file.open('a') as f:
+                    f.write(f'{now:%y-%m-%dT%H:%M:%S} {pop}\n')
 
 
 if __name__ == '__main__':
