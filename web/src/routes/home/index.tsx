@@ -33,9 +33,8 @@ const Home = () => {
 			endDateRef.current.value = maxDate;
 		}
 
-		// FIXME: calling this prevents input boxes from being updated...?!?!
-		// setLastValue((lastPoint.y / 1000).toString());
-		// setLastDate(new Date(points.slice(-1)[0].x).toISOString())
+		setLastValue((lastPoint.y / 1000).toString());
+		setLastDate(new Date(lastPoint.x).toISOString())
 	})
 
 	const dateRangeChanged = (() => {
@@ -77,13 +76,13 @@ const Home = () => {
 				<table>
 					<tr>
 						<td>
-							<input ref={startDateRef} onChange={dateRangeChanged} type="date" value="2018-07-22" min="2018-01-01" max="2018-12-31" />
+							<input ref={startDateRef} onChange={dateRangeChanged} type="date" />
 						</td>
 						<td>
 							to
 						</td>
 						<td>
-							<input ref={endDateRef} onChange={dateRangeChanged} type="date" value="2018-07-22" min="2018-01-01" max="2018-12-31" />
+							<input ref={endDateRef} onChange={dateRangeChanged} type="date" />
 						</td>
 					</tr>
 				</table>

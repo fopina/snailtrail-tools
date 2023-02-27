@@ -50,6 +50,7 @@ class Chart extends Component<ChartProps, ChartState> {
 	}
 
 	componentDidUpdate(previousProps: Readonly<any>, previousState: Readonly<ChartState>, snapshot: any): void {
+		if (this.state.points === undefined) return;
 		let startDate = this.state.startDate;
 
 		if (startDate === undefined) {
