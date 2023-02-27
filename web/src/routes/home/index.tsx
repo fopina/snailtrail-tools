@@ -16,11 +16,12 @@ const Home = () => {
 	const chartPopWorking = useRef<Chart>();
 
 	const dataLoaded = ((points: Point[]) => {
+		const lastPoint = points.slice(-1)[0];
 		const minDate = new Date(points[0].x).toISOString().split('T')[0];
-		const maxDate = new Date(points.slice(-1)[0].x).toISOString().split('T')[0];
+		const maxDate = new Date(lastPoint.x).toISOString().split('T')[0];
 		// default view to last 7 days
 		const initialFromDate = new Date();
-		initialFromDate.setDate(new Date(points.slice(-1)[0].x).getDate() - 7);
+		initialFromDate.setDate(new Date(lastPoint.x).getDate() - 7);
 		if (startDateRef.current) {
 			startDateRef.current.setAttribute("min", minDate);
 			startDateRef.current.setAttribute("max", maxDate);
@@ -31,18 +32,19 @@ const Home = () => {
 			endDateRef.current.setAttribute("max", maxDate);
 			endDateRef.current.value = maxDate;
 		}
-		/*
+
 		// FIXME: calling this prevents input boxes from being updated...?!?!
-		setLastValue((points.slice(-1)[0].y / 1000).toString());
-		setLastDate(new Date(points.slice(-1)[0].x).toISOString())
-		*/
+		// setLastValue((lastPoint.y / 1000).toString());
+		// setLastDate(new Date(points.slice(-1)[0].x).toISOString())
 	})
 
 	const dateRangeChanged = (() => {
-		chartBreed.current.setState({
-			startDate: new Date(startDateRef.current.value),
-			endDate: new Date(endDateRef.current.value),
-		});
+		[chartBreed, chartPopAlive, chartPopDead, chartPopWorking].forEach((chart) => {
+			chart.current.setState({
+				startDate: new Date(startDateRef.current.value),
+				endDate: new Date(endDateRef.current.value),
+			});
+		})
 	});
 
 	return (
