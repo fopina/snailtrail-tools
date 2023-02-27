@@ -54,7 +54,6 @@ const Home = () => {
 					This shows breeding coefficent of <a href="https://www.snailtrail.art">SnailTrail</a> over time,
 					more details can be found in the <a href="https://github.com/fopina/snailtrail-tools/">github project</a>
 				</Card>
-
 				<Card>
 					Feel free to send any SLIME or AVAX over to
 					<CopyButton copyTest='0xd991975e1C72E43C5702ced3230dA484442F195a'>

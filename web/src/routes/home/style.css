@@ -33,6 +33,13 @@
 	color: #000;
 	background-color: #f1f1f1;
 	border: 1px solid transparent;
+	word-break: break-all;
+}
+
+@media (min-width: 500px) {
+	.resource {
+		word-break: normal;
+	}
 }
 
 .resource:hover {
@@ -45,6 +52,7 @@
 		color: #fff;
 		background-color: #181818;
 	}
+
 	.resource:hover {
 		border: 1px solid #bbb;
 		box-shadow: 0 25px 50px -12px #673ab888;
