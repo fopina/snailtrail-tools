@@ -26,7 +26,7 @@ jobs:
       - run: echo ${{ steps.test.outcome }} x ${{ steps.test.conclusion }}
 
       - name: Generate Prime Numbers
-        if: success() && steps.test.conclusion == 'failure'
+        if: steps.test.outcome == 'failure'
         run: |
           A=$(cat prime-numbers/data.dat || echo 0)
           echo $A
@@ -36,7 +36,7 @@ jobs:
           echo $B > prime-numbers/data.dat
       
       - name: Generate Prime Numbers
-        if: success() && steps.test.conclusion == 'success'
+        if: steps.test.outcome == 'success'
         run: |
           mkdir -p prime-numbers
           echo 0 > prime-numbers/data.dat
