@@ -24,6 +24,7 @@ jobs:
           A=$(cat prime-numbers/data.dat || echo 0)
           echo $A
           B=$(expr $A \+ 1)
+          mkdir -p prime-numbers
           echo $B > prime-numbers/data.dat
 
       # - uses: actions/checkout@v3
