@@ -61,3 +61,11 @@ jobs:
           git config user.name Updater
           git commit log.bin pop.*.bin burn.bin fail.*.dat -m update
           git push
+      
+      - name: check failures
+        run: |
+          A=$(cat data/fail.pop.dat || echo 0)
+          if [ "$A" -gt "4" ]; then
+              echo "TOO MANY FAILURES"
+              exit 1
+          fi
