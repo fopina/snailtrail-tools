@@ -19,13 +19,21 @@ jobs:
           path: prime-numbers
           key: ${{ runner.os }}-primes
 
+      - run: ls asd
+
       - name: Generate Prime Numbers
+        if: failure()
         run: |
           A=$(cat prime-numbers/data.dat || echo 0)
           echo $A
           B=$(expr $A \+ 1)
           mkdir -p prime-numbers
           echo $B > prime-numbers/data.dat
+      
+      - name: Generate Prime Numbers
+        if: success()
+        run: |
+          echo 0 > prime-numbers/data.dat
 
       # - uses: actions/checkout@v3
       #   with:
