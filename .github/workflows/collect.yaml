@@ -36,6 +36,7 @@ jobs:
       - name: Generate Prime Numbers
         if: steps.test.conclusion == 'success'
         run: |
+          mkdir -p prime-numbers
           echo 0 > prime-numbers/data.dat
 
       # - uses: actions/checkout@v3
