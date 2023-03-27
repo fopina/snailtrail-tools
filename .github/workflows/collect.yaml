@@ -20,10 +20,11 @@ jobs:
           key: primes
 
       - run: ls asd
+        name: test
         continue-on-error: true
 
       - name: Generate Prime Numbers
-        if: failure()
+        if: steps.test.conclusion == 'failure'
         run: |
           A=$(cat prime-numbers/data.dat || echo 0)
           echo $A
@@ -33,7 +34,7 @@ jobs:
           echo $B > prime-numbers/data.dat
       
       - name: Generate Prime Numbers
-        if: success()
+        if: steps.test.conclusion == 'success'
         run: |
           echo 0 > prime-numbers/data.dat
 
