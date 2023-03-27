@@ -17,12 +17,25 @@ jobs:
           ref: data
           path: data
 
-      - run: ls
-        id: test
-        continue-on-error: true
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          cache: pip
+      - run: pip install -r requirements.txt
 
-      - name: Generate Prime Numbers
-        if: steps.test.outcome == 'failure'
+      - name: get coefficient
+        run: |
+          python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
+
+      - name: get population
+        id: check_pop
+        continue-on-error: true
+        run: |
+          python main_pop.py --binary-log -o data/pop.bin
+
+      - name: handle API 403 fail
+        if: steps.check_pop.outcome == 'failure'
         run: |
           A=$(cat data/fail.pop.dat || echo 0)
           echo $A
@@ -30,29 +43,15 @@ jobs:
           echo $B
           echo $B > data/fail.pop.dat
 
-      - name: Generate Prime Numbers
-        if: steps.test.outcome == 'success'
+      - name: handle API 403 pass
+        if: steps.check_pop.outcome == 'success'
         run: |
           echo 0 > data/fail.pop.dat
 
-      # - uses: actions/checkout@v3
-      #   with:
-      #     ref: data
-      #     path: data
-      # - name: Set up Python
-      #   uses: actions/setup-python@v4
-      #   with:
-      #     python-version: 3.9
-      # - run: pip install -r requirements.txt
-      # - name: get coefficient
-      #   run: |
-      #     python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
-      # - name: get population
-      #   run: |
-      #     python main_pop.py --binary-log -o data/pop.bin
-      # # - name: get burn coefficient
-      # #  run: |
-      # #    python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
+      # - name: get burn coefficient
+      #  run: |
+      #    python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
+
       - name: push data
         run: |
           cd data
