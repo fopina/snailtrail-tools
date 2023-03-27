@@ -27,7 +27,7 @@ jobs:
         if: success() || failure()
 
       - name: Generate Prime Numbers
-        if: success() || steps.test.conclusion == 'failure'
+        if: failure() || steps.test.conclusion == 'failure'
         run: |
           A=$(cat prime-numbers/data.dat || echo 0)
           echo $A
