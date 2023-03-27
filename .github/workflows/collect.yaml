@@ -12,29 +12,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
+      - name: Cache Primes
+        id: cache-primes
+        uses: actions/cache@v3
         with:
-          ref: data
-          path: data
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-      - run: pip install -r requirements.txt
-      - name: get coefficient
+          path: prime-numbers
+          key: ${{ runner.os }}-primes
+
+      - name: Generate Prime Numbers
         run: |
-          python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
-      - name: get population
-        run: |
-          python main_pop.py --binary-log -o data/pop.bin
-      # - name: get burn coefficient
-      #  run: |
-      #    python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
-      - name: push data
-        run: |
-          cd data
-          git add log.bin pop.*.bin burn.bin
-          git config user.email updater@devnull.localhost
-          git config user.name Updater
-          git commit log.bin pop.*.bin burn.bin -m update
-          git push
+          A=$(cat prime-numbers/data.dat || echo 0)
+          echo $A
+          B=$(expr $A \+ 1)
+          echo $B > prime-numbers/data.dat
+
+      # - uses: actions/checkout@v3
+      #   with:
+      #     ref: data
+      #     path: data
+      # - name: Set up Python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: 3.9
+      # - run: pip install -r requirements.txt
+      # - name: get coefficient
+      #   run: |
+      #     python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
+      # - name: get population
+      #   run: |
+      #     python main_pop.py --binary-log -o data/pop.bin
+      # # - name: get burn coefficient
+      # #  run: |
+      # #    python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
+      # - name: push data
+      #   run: |
+      #     cd data
+      #     git add log.bin pop.*.bin burn.bin
+      #     git config user.email updater@devnull.localhost
+      #     git config user.name Updater
+      #     git commit log.bin pop.*.bin burn.bin -m update
+      #     git push
