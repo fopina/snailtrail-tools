@@ -24,6 +24,7 @@ jobs:
         continue-on-error: true
 
       - run: echo ${{ steps.test.conclusion }}
+        if: success()
 
       - name: Generate Prime Numbers
         if: steps.test.conclusion == 'failure'
