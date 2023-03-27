@@ -12,35 +12,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Cache Primes
-        id: cache-primes
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
         with:
-          path: prime-numbers
-          key: primes-${{ github.run_id }}
-          restore-keys: primes
+          ref: data
+          path: data
 
       - run: ls asd
         id: test
         continue-on-error: true
 
-      - run: echo ${{ steps.test.outcome }} x ${{ steps.test.conclusion }}
-
       - name: Generate Prime Numbers
         if: steps.test.outcome == 'failure'
         run: |
-          A=$(cat prime-numbers/data.dat || echo 0)
+          A=$(cat data/fail.pop.dat || echo 0)
           echo $A
           B=$(expr $A \+ 1)
           echo $B
-          mkdir -p prime-numbers
-          echo $B > prime-numbers/data.dat
-      
+          echo $B > data/fail.pop.dat
+
       - name: Generate Prime Numbers
         if: steps.test.outcome == 'success'
         run: |
-          mkdir -p prime-numbers
-          echo 0 > prime-numbers/data.dat
+          echo 0 > data/fail.pop.dat
 
       # - uses: actions/checkout@v3
       #   with:
@@ -60,11 +53,11 @@ jobs:
       # # - name: get burn coefficient
       # #  run: |
       # #    python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
-      # - name: push data
-      #   run: |
-      #     cd data
-      #     git add log.bin pop.*.bin burn.bin
-      #     git config user.email updater@devnull.localhost
-      #     git config user.name Updater
-      #     git commit log.bin pop.*.bin burn.bin -m update
-      #     git push
+      - name: push data
+        run: |
+          cd data
+          git add log.bin pop.*.bin burn.bin fail.*.dat
+          git config user.email updater@devnull.localhost
+          git config user.name Updater
+          git commit log.bin pop.*.bin burn.bin -m update
+          git push
