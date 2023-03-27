@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useState, useRef } from 'preact/hooks';
 import style from './style.css';
-import Chart from '../../components/chart';
+import Chart, { ChartExtra } from '../../components/chart';
 import CopyButton from '../../components/copybutton';
 import { Point } from '../../utils/utils';
 
@@ -34,7 +34,6 @@ const Home = () => {
 			endDateRef.current.setAttribute("max", maxDate);
 			endDateRef.current.value = maxDate;
 		}
-
 		setLastValue((lastPoint.y / 1000).toString());
 		setLastDate(new Date(lastPoint.x).toISOString())
 	})
@@ -80,7 +79,7 @@ const Home = () => {
 				<Card title={lastPopValue}>
 					Last value ({lastPopDate})
 				</Card>
-				<Chart class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
+				<ChartExtra class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
 			</section>
 			<section>
 				<Chart class={style.resource2} ref={chartPopDead} label="Burnt" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.dead.bin" />
