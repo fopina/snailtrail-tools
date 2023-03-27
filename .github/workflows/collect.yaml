@@ -16,25 +16,55 @@ jobs:
         with:
           ref: data
           path: data
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
+          cache: pip
       - run: pip install -r requirements.txt
+
       - name: get coefficient
         run: |
           python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
+
       - name: get population
+        id: check_pop
+        continue-on-error: true
         run: |
           python main_pop.py --binary-log -o data/pop.bin
+
+      - name: handle API 403 fail
+        if: steps.check_pop.outcome == 'failure'
+        run: |
+          A=$(cat data/fail.pop.dat || echo 0)
+          echo $A
+          B=$(expr $A \+ 1)
+          echo $B
+          echo $B > data/fail.pop.dat
+
+      - name: handle API 403 pass
+        if: steps.check_pop.outcome == 'success'
+        run: |
+          echo 0 > data/fail.pop.dat
+
       # - name: get burn coefficient
       #  run: |
       #    python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
+
       - name: push data
         run: |
           cd data
-          git add log.bin pop.*.bin burn.bin
+          git add log.bin pop.*.bin burn.bin fail.*.dat
           git config user.email updater@devnull.localhost
           git config user.name Updater
-          git commit log.bin pop.*.bin burn.bin -m update
+          git commit log.bin pop.*.bin burn.bin fail.*.dat -m update
           git push
+      
+      - name: check failures
+        run: |
+          A=$(cat data/fail.pop.dat || echo 0)
+          if [ "$A" -gt "4" ]; then
+              echo "TOO MANY FAILURES"
+              exit 1
+          fi
