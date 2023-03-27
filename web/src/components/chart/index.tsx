@@ -13,6 +13,7 @@ interface ChartProps {
 	url: string;
 	label: string;
 	onDataLoaded?: Function;
+	class?: string;
 }
 
 class Chart extends Component<ChartProps, ChartState> {
@@ -44,7 +45,7 @@ class Chart extends Component<ChartProps, ChartState> {
 		});
 
 		loadData(this.props.url).then(points => {
-			this.setState({points: points})
+			this.setState({points})
 			if (this.props.onDataLoaded) this.props.onDataLoaded(points);
 		});
 	}
@@ -67,11 +68,11 @@ class Chart extends Component<ChartProps, ChartState> {
 
 	render() {
 		return (
-			<div class="chart">
+			<div class={`chart ${  this.props.class}`}>
 				<canvas ref={this.chart} role="img" />
 			</div>
 		);
 	}
-};
+}
 
 export default Chart;

@@ -28,6 +28,6 @@ class CopyButton extends Component<CopyButtonProps> {
 			</div>
 		);
 	}
-};
+}
 
 export default CopyButton;

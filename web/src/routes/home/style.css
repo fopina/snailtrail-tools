@@ -13,7 +13,7 @@
 .home section {
 	margin-top: 10rem;
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
 	column-gap: 1.5rem;
 }
 
@@ -34,6 +34,18 @@
 	background-color: #f1f1f1;
 	border: 1px solid transparent;
 	word-break: break-all;
+}
+
+.resource2 {
+  	grid-column-end: span 2;
+}
+
+.resource3 {
+  	grid-column-end: span 3;
+}
+
+.resource4 {
+	grid-column-end: span 4;
 }
 
 @media (min-width: 500px) {

@@ -13,7 +13,7 @@ const App = () => (
 		<Header />
 		<main>
 			<Router>
-				<Route path={baseroute + "/"} component={Home} />
+				<Route path={`${baseroute  }/`} component={Home} />
 			</Router>
 		</main>
 	</div>

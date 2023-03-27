@@ -4,9 +4,9 @@ export interface Point {
 }
 
 function _unpackLogBin(data): Point[] {
-    let points = [];
-    let x = new DataView(data);
-    for (var i = 0; i < data.byteLength; i += 6) {
+    const points = [];
+    const x = new DataView(data);
+    for (let i = 0; i < data.byteLength; i += 6) {
         points.push({ x: x.getUint32(i, false) * 1000, y: x.getUint16(i + 4, false) });
     }
     return points;
