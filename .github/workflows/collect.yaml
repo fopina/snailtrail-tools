@@ -17,7 +17,7 @@ jobs:
           ref: data
           path: data
 
-      - run: ls asd
+      - run: ls
         id: test
         continue-on-error: true
 
