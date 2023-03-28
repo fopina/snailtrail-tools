@@ -1,57 +1,58 @@
-import { h } from 'preact';
-import { useState, useRef } from 'preact/hooks';
-import style from './style.css';
-import Chart from '../../components/chart';
-import CopyButton from '../../components/copybutton';
-import { Point } from '../../utils/utils';
+import { h } from 'preact'
+import { useState, useRef } from 'preact/hooks'
+import style from './style.css'
+import Chart from '../../components/chart'
+import CopyButton from '../../components/copybutton'
+import { type Point } from '../../utils/utils'
 
-const Home = () => {
-	const [lastValue, setLastValue] = useState("?");
-	const [lastDate, setLastDate] = useState("?");
-	const [lastPopValue, setLastPopValue] = useState("?");
-	const [lastPopDate, setLastPopDate] = useState("?");
-	const startDateRef = useRef<HTMLInputElement>();
-	const endDateRef = useRef<HTMLInputElement>();
-	const chartBreed = useRef<Chart>();
-	const chartPopAlive = useRef<Chart>();
-	const chartPopDead = useRef<Chart>();
-	const chartPopWorking = useRef<Chart>();
+const Home = (): h.JSX.Element => {
+  const [lastValue, setLastValue] = useState('?')
+  const [lastDate, setLastDate] = useState('?')
+  const [lastPopValue, setLastPopValue] = useState('?')
+  const [lastPopDate, setLastPopDate] = useState('?')
+  const startDateRef = useRef<HTMLInputElement>()
+  const endDateRef = useRef<HTMLInputElement>()
+  const chartBreed = useRef<Chart>()
+  const chartPopAlive = useRef<Chart>()
+  const chartPopDead = useRef<Chart>()
+  const chartPopWorking = useRef<Chart>()
 
-	const coefDataLoaded = ((points: Point[]) => {
-		const lastPoint = points.slice(-1)[0];
-		const minDate = new Date(points[0].x).toISOString().split('T')[0];
-		const maxDate = new Date(lastPoint.x).toISOString().split('T')[0];
-		// default view to last 7 days
-		const initialFromDate = new Date();
-		initialFromDate.setDate(new Date(lastPoint.x).getDate() - 7);
-		if (startDateRef.current) {
-			startDateRef.current.setAttribute("min", minDate);
-			startDateRef.current.setAttribute("max", maxDate);
-			startDateRef.current.value = initialFromDate.toISOString().split('T')[0];
-		}
-		if (endDateRef.current) {
-			endDateRef.current.setAttribute("min", minDate);
-			endDateRef.current.setAttribute("max", maxDate);
-			endDateRef.current.value = maxDate;
-		}
-		setLastValue((lastPoint.y / 1000).toString());
-		setLastDate(new Date(lastPoint.x).toISOString())
-	})
+  const coefDataLoaded = (points: Point[]): void => {
+    const lastPoint = points.slice(-1)[0]
+    const minDate = new Date(points[0].x).toISOString().split('T')[0]
+    const maxDate = new Date(lastPoint.x).toISOString().split('T')[0]
+    // default view to last 7 days
+    const initialFromDate = new Date()
+    initialFromDate.setDate(new Date(lastPoint.x).getDate() - 7)
+    if (startDateRef.current !== undefined) {
+      startDateRef.current.setAttribute('min', minDate)
+      startDateRef.current.setAttribute('max', maxDate)
+      startDateRef.current.value = initialFromDate.toISOString().split('T')[0]
+    }
+    if (endDateRef.current !== undefined) {
+      endDateRef.current.setAttribute('min', minDate)
+      endDateRef.current.setAttribute('max', maxDate)
+      endDateRef.current.value = maxDate
+    }
 
-	const popDataLoaded = ((points: Point[]) => {
-		const lastPoint = points.slice(-1)[0];
-		setLastPopValue((lastPoint.y).toString());
-		setLastPopDate(new Date(lastPoint.x).toISOString())
-	})
+    setLastValue((lastPoint.y / 1000).toString())
+    setLastDate(new Date(lastPoint.x).toISOString())
+  }
 
-	const dateRangeChanged = (() => {
-		[chartBreed, chartPopAlive, chartPopDead, chartPopWorking].forEach((chart) => {
-			chart.current.setState({
-				startDate: new Date(startDateRef.current.value),
-				endDate: new Date(endDateRef.current.value),
-			});
-		})
-	});
+  const popDataLoaded = (points: Point[]): void => {
+    const lastPoint = points.slice(-1)[0]
+    setLastPopValue((lastPoint.y).toString())
+    setLastPopDate(new Date(lastPoint.x).toISOString())
+  }
+
+  const dateRangeChanged = (): void => {
+    [chartBreed, chartPopAlive, chartPopDead, chartPopWorking].forEach((chart) => {
+      chart.current.setState({
+        startDate: new Date(startDateRef.current.value),
+        endDate: new Date(endDateRef.current.value)
+      })
+    })
+  }
 
 	return (
 		<div class={style.home}>
@@ -105,32 +106,32 @@ const Home = () => {
 };
 
 interface CardProps {
-	title?: string;
-	children: any;
-	size?: number
+  title?: string
+  children: any
+  size?: number
 }
 
-const Card = (props: CardProps) => {
-	const styles = [style.resource]
-	switch(props.size) {
-		// FIXME: pass size directly to style...?
-		case 1.5:
-			styles.push(style.resourceMid)
-			break
-		case 2:
-			styles.push(style.resource2)
-			break
-		case 3:
-			styles.push(style.resource3)
-			break
-	}
-	return (
-		<div class={styles.join(" ")}>
-			<h2>{props.title}</h2>
-			<p>{props.children}</p>
-		</div>
-	);
-};
+const Card = (props: CardProps): h.JSX.Element => {
+  const styles = [style.resource]
+  switch (props.size) {
+    // FIXME: pass size directly to style...?
+    case 1.5:
+      styles.push(style.resourceMid)
+      break
+    case 2:
+      styles.push(style.resource2)
+      break
+    case 3:
+      styles.push(style.resource3)
+      break
+  }
+  return (
+    <div class={styles.join(' ')}>
+      <h2>{props.title}</h2>
+      <p>{props.children}</p>
+    </div>
+  )
+}
 
 class ChartPop extends Chart {
 	componentDidMount(): void {
@@ -172,4 +173,4 @@ class ChartCoef extends Chart {
 	}
 }
 
-export default Home;
+export default Home
