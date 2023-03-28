@@ -80,7 +80,7 @@ const Home = (): h.JSX.Element => {
         <Card title={lastPopValue}>
           Last value ({lastPopDate})
         </Card>
-        <ChartPop class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
+        <Chart class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
       </section>
       <section>
         <Chart class={style.resource2} ref={chartPopDead} label="Burnt" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.dead.bin" />
@@ -131,25 +131,6 @@ const Card = (props: CardProps): h.JSX.Element => {
       <p>{props.children}</p>
     </div>
   )
-}
-
-class ChartPop extends Chart {
-  componentDidMount (): void {
-    super.componentDidMount()
-    this.chartJS.data.datasets.push({ label: 'Drop Cap', data: [], borderColor: 'red', backgroundColor: 'red' })
-  }
-
-  componentDidUpdate (previousProps: Readonly<any>, previousState: Readonly<any>, snapshot: any): void {
-    super.componentDidUpdate(previousProps, previousState, snapshot)
-    if (this.state.points === undefined) return
-    const points = this.state.points.map((p: Point) => {
-      return { x: p.x + 86400000, y: p.y + p.y * 0.2 / 30 }
-    })
-    console.log(this.state.points.slice(0, 2))
-    console.log(points.slice(0, 2))
-    this.chartJS.data.datasets[1].data = points
-    this.chartJS.update()
-  }
 }
 
 class ChartCoef extends Chart {
