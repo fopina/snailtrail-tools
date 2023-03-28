@@ -9,8 +9,9 @@ interface CopyButtonProps {
 
 class CopyButton extends Component<CopyButtonProps> {
   clicked = (): void => {
-    const copyTest = this.props.copyTest ?? this.props.children.toString()
-    void navigator.clipboard.writeText(copyTest).then(
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    const copyTest = this.props.copyTest ?? this.props.children?.toString()
+    void navigator.clipboard.writeText(copyTest ?? '').then(
       () => {
         alert('Address copied to clipboard, thank you!')
       }

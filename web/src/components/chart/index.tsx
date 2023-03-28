@@ -60,10 +60,12 @@ class Chart extends Component<ChartProps, ChartState> {
       startDate = initialFromDate
     }
 
-    this.chartJS.data.datasets[0].data = this.state.points
-    this.chartJS.options.scales.x.min = startDate
-    if (this.state.endDate !== undefined) this.chartJS.options.scales.x.max = this.state.endDate
-    this.chartJS.update()
+    if (this.chartJS?.options?.scales?.x) {
+      this.chartJS.data.datasets[0].data = this.state.points
+      this.chartJS.options.scales.x.min = startDate
+      if (this.state.endDate !== undefined) this.chartJS.options.scales.x.max = this.state.endDate
+      this.chartJS.update()
+    }
   }
 
   render (): h.JSX.Element {

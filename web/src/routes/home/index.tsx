@@ -10,8 +10,8 @@ const Home = (): h.JSX.Element => {
   const [lastDate, setLastDate] = useState('?')
   const [lastPopValue, setLastPopValue] = useState('?')
   const [lastPopDate, setLastPopDate] = useState('?')
-  const startDateRef = useRef<HTMLInputElement>()
-  const endDateRef = useRef<HTMLInputElement>()
+  const startDateRef = useRef<HTMLInputElement>(null)
+  const endDateRef = useRef<HTMLInputElement>(null)
   const chartBreed = useRef<Chart>()
   const chartPopAlive = useRef<Chart>()
   const chartPopDead = useRef<Chart>()
@@ -24,12 +24,12 @@ const Home = (): h.JSX.Element => {
     // default view to last 7 days
     const initialFromDate = new Date()
     initialFromDate.setDate(new Date(lastPoint.x).getDate() - 7)
-    if (startDateRef.current !== undefined) {
+    if (startDateRef.current !== null) {
       startDateRef.current.setAttribute('min', minDate)
       startDateRef.current.setAttribute('max', maxDate)
       startDateRef.current.value = initialFromDate.toISOString().split('T')[0]
     }
-    if (endDateRef.current !== undefined) {
+    if (endDateRef.current !== null) {
       endDateRef.current.setAttribute('min', minDate)
       endDateRef.current.setAttribute('max', maxDate)
       endDateRef.current.value = maxDate
@@ -47,10 +47,12 @@ const Home = (): h.JSX.Element => {
 
   const dateRangeChanged = (): void => {
     [chartBreed, chartPopAlive, chartPopDead, chartPopWorking].forEach((chart) => {
-      chart.current.setState({
-        startDate: new Date(startDateRef.current.value),
-        endDate: new Date(endDateRef.current.value)
-      })
+      if (startDateRef.current && endDateRef.current) {
+        chart.current?.setState({
+          startDate: new Date(startDateRef.current.value),
+          endDate: new Date(endDateRef.current.value)
+        })
+      }
     })
   }
 
@@ -136,7 +138,7 @@ const Card = (props: CardProps): h.JSX.Element => {
 class ChartCoef extends Chart {
   componentDidMount (): void {
     super.componentDidMount()
-    this.chartJS.data.datasets.push({ label: 'Drop Cap', data: [], borderColor: 'red', backgroundColor: 'red' })
+    if (this.chartJS) this.chartJS.data.datasets.push({ label: 'Drop Cap', data: [], borderColor: 'red', backgroundColor: 'red' })
   }
 
   componentDidUpdate (previousProps: Readonly<any>, previousState: Readonly<any>, snapshot: any): void {
@@ -144,22 +146,32 @@ class ChartCoef extends Chart {
     if (this.state.points === undefined) return
     let lowest = Number.MAX_VALUE
     const window24h: Point[] = []
+    const setLowest = (): void => {
+      lowest = Number.MAX_VALUE
+      // find new lowest in window
+      for (const p of window24h) {
+        if (p.y < lowest) lowest = p.y
+      }
+    }
     const points = this.state.points.map((p: Point) => {
       window24h.push(p)
       while (p.x - window24h[0].x > 86400000) {
         const p2 = window24h.shift()
-        if (p2.y <= lowest) lowest = Number.MAX_VALUE
+        if (p2 && p2.y <= lowest) lowest = Number.MAX_VALUE
       }
-      if (lowest === Number.MAX_VALUE) {
-        // find new lowest in window
-        for (p of window24h) {
-          if (p.y < lowest) lowest = p.y
-        }
-      }
+      if (lowest === Number.MAX_VALUE) setLowest()
       return { x: p.x, y: lowest * 1.1 }
     })
-    this.chartJS.data.datasets[1].data = points
-    this.chartJS.update()
+    while (window24h.length) {
+      const p2 = window24h.shift()
+      if (!p2) break
+      if (p2.y <= lowest) setLowest()
+      points.push({ x: p2.x + 86400000, y: lowest * 1.1 })
+    }
+    if (this.chartJS) {
+      this.chartJS.data.datasets[1].data = points
+      this.chartJS.update()
+    }
   }
 }
 
