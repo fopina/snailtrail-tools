@@ -54,56 +54,56 @@ const Home = (): h.JSX.Element => {
     })
   }
 
-	return (
-		<div class={style.home}>
-			<h1>Tracking snailtrail coefficients</h1>
-			<section>
-				<Card size={2}>
-					This shows breeding coefficent of <a href="https://www.snailtrail.art">SnailTrail</a> over time,
-					more details can be found in the <a href="https://github.com/fopina/snailtrail-tools/">github project</a>
-				</Card>
-				<Card size={2}>
-					Feel free to send any SLIME or AVAX over to
-					<CopyButton copyTest='0xd991975e1C72E43C5702ced3230dA484442F195a'>
-						<em>0xd991975e1C72E43C5702ced3230dA484442F195a</em>
-					</CopyButton>
-					if you find this useful!
-				</Card>
-			</section>
-			<section>
-				<Card title={`${lastValue  } %`}>
-					Last value ({lastDate})
-				</Card>
-				<ChartCoef class={style.resource3} ref={chartBreed} label="Coefficient" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/log.bin" onDataLoaded={coefDataLoaded} />
-			</section>
-			<section>
-				<Card title={lastPopValue}>
-					Last value ({lastPopDate})
-				</Card>
-				<ChartPop class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
-			</section>
-			<section>
-				<Chart class={style.resource2} ref={chartPopDead} label="Burnt" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.dead.bin" />
-				<Chart class={style.resource2} ref={chartPopWorking} label="Working" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.working.bin" />
-			</section>
-			<section>
-				<table>
-					<tr>
-						<td>
-							<input ref={startDateRef} onChange={dateRangeChanged} type="date" />
-						</td>
-						<td>
-							to
-						</td>
-						<td>
-							<input ref={endDateRef} onChange={dateRangeChanged} type="date" />
-						</td>
-					</tr>
-				</table>
-			</section>
-		</div>
-	);
-};
+  return (
+    <div class={style.home}>
+      <h1>Tracking snailtrail coefficients</h1>
+      <section>
+        <Card size={2}>
+          This shows breeding coefficent of <a href="https://www.snailtrail.art">SnailTrail</a> over time,
+          more details can be found in the <a href="https://github.com/fopina/snailtrail-tools/">github project</a>
+        </Card>
+        <Card size={2}>
+          Feel free to send any SLIME or AVAX over to
+          <CopyButton copyTest='0xd991975e1C72E43C5702ced3230dA484442F195a'>
+            <em>0xd991975e1C72E43C5702ced3230dA484442F195a</em>
+          </CopyButton>
+          if you find this useful!
+        </Card>
+      </section>
+      <section>
+        <Card title={`${lastValue} %`}>
+          Last value ({lastDate})
+        </Card>
+        <ChartCoef class={style.resource3} ref={chartBreed} label="Coefficient" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/log.bin" onDataLoaded={coefDataLoaded} />
+      </section>
+      <section>
+        <Card title={lastPopValue}>
+          Last value ({lastPopDate})
+        </Card>
+        <ChartPop class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
+      </section>
+      <section>
+        <Chart class={style.resource2} ref={chartPopDead} label="Burnt" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.dead.bin" />
+        <Chart class={style.resource2} ref={chartPopWorking} label="Working" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.working.bin" />
+      </section>
+      <section>
+        <table>
+          <tr>
+            <td>
+              <input ref={startDateRef} onChange={dateRangeChanged} type="date" />
+            </td>
+            <td>
+              to
+            </td>
+            <td>
+              <input ref={endDateRef} onChange={dateRangeChanged} type="date" />
+            </td>
+          </tr>
+        </table>
+      </section>
+    </div>
+  )
+}
 
 interface CardProps {
   title?: string
@@ -134,43 +134,45 @@ const Card = (props: CardProps): h.JSX.Element => {
 }
 
 class ChartPop extends Chart {
-	componentDidMount(): void {
-		super.componentDidMount();
-		this.chartJS.data.datasets.push({label: "Drop Cap", data: [], borderColor: "red", backgroundColor: "red"});
-	}
-	componentDidUpdate(previousProps: Readonly<any>, previousState: Readonly<any>, snapshot: any): void {
-		super.componentDidUpdate(previousProps, previousState, snapshot);
-		if (this.state.points === undefined) return;
-		const points = this.state.points.map((p: Point) => {
-			return {x: p.x + 86400000, y: p.y + p.y * 0.2 / 30 }
-		});
-		console.log(this.state.points.slice(0, 2))
-		console.log(points.slice(0, 2))
-		this.chartJS.data.datasets[1].data = points;
-		this.chartJS.update();
-	}
+  componentDidMount (): void {
+    super.componentDidMount()
+    this.chartJS.data.datasets.push({ label: 'Drop Cap', data: [], borderColor: 'red', backgroundColor: 'red' })
+  }
+
+  componentDidUpdate (previousProps: Readonly<any>, previousState: Readonly<any>, snapshot: any): void {
+    super.componentDidUpdate(previousProps, previousState, snapshot)
+    if (this.state.points === undefined) return
+    const points = this.state.points.map((p: Point) => {
+      return { x: p.x + 86400000, y: p.y + p.y * 0.2 / 30 }
+    })
+    console.log(this.state.points.slice(0, 2))
+    console.log(points.slice(0, 2))
+    this.chartJS.data.datasets[1].data = points
+    this.chartJS.update()
+  }
 }
 
 class ChartCoef extends Chart {
-	componentDidMount(): void {
-		super.componentDidMount();
-		this.chartJS.data.datasets.push({label: "Drop Cap", data: [], borderColor: "red", backgroundColor: "red"});
-	}
-	componentDidUpdate(previousProps: Readonly<any>, previousState: Readonly<any>, snapshot: any): void {
-		super.componentDidUpdate(previousProps, previousState, snapshot);
-		if (this.state.points === undefined) return;
-		let lowest = Number.MAX_VALUE;
-		let last = 0;
-		const points = this.state.points.map((p: Point) => {
-			if (p.y < last) lowest = p.y;
-			last = p.y;
-			return {x: p.x + 86400000, y: lowest * 1.1}
-		});
-		console.log(this.state.points.slice(0, 2))
-		console.log(points.slice(0, 2))
-		this.chartJS.data.datasets[1].data = points;
-		this.chartJS.update();
-	}
+  componentDidMount (): void {
+    super.componentDidMount()
+    this.chartJS.data.datasets.push({ label: 'Drop Cap', data: [], borderColor: 'red', backgroundColor: 'red' })
+  }
+
+  componentDidUpdate (previousProps: Readonly<any>, previousState: Readonly<any>, snapshot: any): void {
+    super.componentDidUpdate(previousProps, previousState, snapshot)
+    if (this.state.points === undefined) return
+    let lowest = Number.MAX_VALUE
+    let last = 0
+    const points = this.state.points.map((p: Point) => {
+      if (p.y < last) lowest = p.y
+      last = p.y
+      return { x: p.x + 86400000, y: lowest * 1.1 }
+    })
+    console.log(this.state.points.slice(0, 2))
+    console.log(points.slice(0, 2))
+    this.chartJS.data.datasets[1].data = points
+    this.chartJS.update()
+  }
 }
 
 export default Home
