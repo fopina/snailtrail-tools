@@ -8,23 +8,23 @@ interface CopyButtonProps {
 }
 
 class CopyButton extends Component<CopyButtonProps> {
-  clicked = () => {
-    const copyTest = this.props.copyTest || this.props.children.toString()
-    navigator.clipboard.writeText(copyTest).then(
+  clicked = (): void => {
+    const copyTest = this.props.copyTest ?? this.props.children.toString()
+    void navigator.clipboard.writeText(copyTest).then(
       () => {
         alert('Address copied to clipboard, thank you!')
       }
     )
   }
 
-  render () {
+  render (): h.JSX.Element {
     return (
-			<div>
-				{this.props.children}
-				<a href="#" onClick={this.clicked}>
-					<FontAwesomeIcon icon={FAIcons.faClipboard} />
-				</a>
-			</div>
+      <div>
+        {this.props.children}
+        <a href="#" onClick={this.clicked}>
+          <FontAwesomeIcon icon={FAIcons.faClipboard} />
+        </a>
+      </div>
     )
   }
 }

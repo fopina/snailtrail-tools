@@ -5,7 +5,7 @@ import Chart from '../../components/chart'
 import CopyButton from '../../components/copybutton'
 import { type Point } from '../../utils/utils'
 
-const Home = () => {
+const Home = (): h.JSX.Element => {
   const [lastValue, setLastValue] = useState('?')
   const [lastDate, setLastDate] = useState('?')
   const [lastPopValue, setLastPopValue] = useState('?')
@@ -17,19 +17,19 @@ const Home = () => {
   const chartPopDead = useRef<Chart>()
   const chartPopWorking = useRef<Chart>()
 
-  const coefDataLoaded = (points: Point[]) => {
+  const coefDataLoaded = (points: Point[]): void => {
     const lastPoint = points.slice(-1)[0]
     const minDate = new Date(points[0].x).toISOString().split('T')[0]
     const maxDate = new Date(lastPoint.x).toISOString().split('T')[0]
     // default view to last 7 days
     const initialFromDate = new Date()
     initialFromDate.setDate(new Date(lastPoint.x).getDate() - 7)
-    if (startDateRef.current) {
+    if (startDateRef.current !== undefined) {
       startDateRef.current.setAttribute('min', minDate)
       startDateRef.current.setAttribute('max', maxDate)
       startDateRef.current.value = initialFromDate.toISOString().split('T')[0]
     }
-    if (endDateRef.current) {
+    if (endDateRef.current !== undefined) {
       endDateRef.current.setAttribute('min', minDate)
       endDateRef.current.setAttribute('max', maxDate)
       endDateRef.current.value = maxDate
@@ -39,13 +39,13 @@ const Home = () => {
     setLastDate(new Date(lastPoint.x).toISOString())
   }
 
-  const popDataLoaded = (points: Point[]) => {
+  const popDataLoaded = (points: Point[]): void => {
     const lastPoint = points.slice(-1)[0]
     setLastPopValue((lastPoint.y).toString())
     setLastPopDate(new Date(lastPoint.x).toISOString())
   }
 
-  const dateRangeChanged = () => {
+  const dateRangeChanged = (): void => {
     [chartBreed, chartPopAlive, chartPopDead, chartPopWorking].forEach((chart) => {
       chart.current.setState({
         startDate: new Date(startDateRef.current.value),
@@ -55,53 +55,53 @@ const Home = () => {
   }
 
   return (
-		<div class={style.home}>
-			<h1>Tracking snailtrail coefficients</h1>
-			<section>
-				<Card size={2}>
-					This shows breeding coefficent of <a href="https://www.snailtrail.art">SnailTrail</a> over time,
-					more details can be found in the <a href="https://github.com/fopina/snailtrail-tools/">github project</a>
-				</Card>
-				<Card size={2}>
-					Feel free to send any SLIME or AVAX over to
-					<CopyButton copyTest='0xd991975e1C72E43C5702ced3230dA484442F195a'>
-						<em>0xd991975e1C72E43C5702ced3230dA484442F195a</em>
-					</CopyButton>
-					if you find this useful!
-				</Card>
-			</section>
-			<section>
-				<Card title={`${lastValue} %`}>
-					Last value ({lastDate})
-				</Card>
-				<Chart class={style.resource3} ref={chartBreed} label="Coefficient" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/log.bin" onDataLoaded={coefDataLoaded} />
-			</section>
-			<section>
-				<Card title={lastPopValue}>
-					Last value ({lastPopDate})
-				</Card>
-				<Chart class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
-			</section>
-			<section>
-				<Chart class={style.resource2} ref={chartPopDead} label="Burnt" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.dead.bin" />
-				<Chart class={style.resource2} ref={chartPopWorking} label="Working" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.working.bin" />
-			</section>
-			<section>
-				<table>
-					<tr>
-						<td>
-							<input ref={startDateRef} onChange={dateRangeChanged} type="date" />
-						</td>
-						<td>
-							to
-						</td>
-						<td>
-							<input ref={endDateRef} onChange={dateRangeChanged} type="date" />
-						</td>
-					</tr>
-				</table>
-			</section>
-		</div>
+    <div class={style.home}>
+      <h1>Tracking snailtrail coefficients</h1>
+      <section>
+        <Card size={2}>
+          This shows breeding coefficent of <a href="https://www.snailtrail.art">SnailTrail</a> over time,
+          more details can be found in the <a href="https://github.com/fopina/snailtrail-tools/">github project</a>
+        </Card>
+        <Card size={2}>
+          Feel free to send any SLIME or AVAX over to
+          <CopyButton copyTest='0xd991975e1C72E43C5702ced3230dA484442F195a'>
+            <em>0xd991975e1C72E43C5702ced3230dA484442F195a</em>
+          </CopyButton>
+          if you find this useful!
+        </Card>
+      </section>
+      <section>
+        <Card title={`${lastValue} %`}>
+          Last value ({lastDate})
+        </Card>
+        <Chart class={style.resource3} ref={chartBreed} label="Coefficient" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/log.bin" onDataLoaded={coefDataLoaded} />
+      </section>
+      <section>
+        <Card title={lastPopValue}>
+          Last value ({lastPopDate})
+        </Card>
+        <Chart class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
+      </section>
+      <section>
+        <Chart class={style.resource2} ref={chartPopDead} label="Burnt" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.dead.bin" />
+        <Chart class={style.resource2} ref={chartPopWorking} label="Working" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.working.bin" />
+      </section>
+      <section>
+        <table>
+          <tr>
+            <td>
+              <input ref={startDateRef} onChange={dateRangeChanged} type="date" />
+            </td>
+            <td>
+              to
+            </td>
+            <td>
+              <input ref={endDateRef} onChange={dateRangeChanged} type="date" />
+            </td>
+          </tr>
+        </table>
+      </section>
+    </div>
   )
 }
 
@@ -111,7 +111,7 @@ interface CardProps {
   size?: number
 }
 
-const Card = (props: CardProps) => {
+const Card = (props: CardProps): h.JSX.Element => {
   const styles = [style.resource]
   switch (props.size) {
     // FIXME: pass size directly to style...?
@@ -126,10 +126,10 @@ const Card = (props: CardProps) => {
       break
   }
   return (
-		<div class={styles.join(' ')}>
-			<h2>{props.title}</h2>
-			<p>{props.children}</p>
-		</div>
+    <div class={styles.join(' ')}>
+      <h2>{props.title}</h2>
+      <p>{props.children}</p>
+    </div>
   )
 }
 

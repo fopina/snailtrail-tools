@@ -12,13 +12,13 @@ interface ChartState {
 interface ChartProps {
   url: string
   label: string
-  onDataLoaded?: Function
+  onDataLoaded?: (points: Point[]) => void
   class?: string
 }
 
 class Chart extends Component<ChartProps, ChartState> {
   chart = createRef()
-  chartJS = null
+  chartJS: ChartJS | null = null
 
   componentDidMount (): void {
     this.chartJS = new ChartJS(this.chart.current, {
@@ -44,9 +44,9 @@ class Chart extends Component<ChartProps, ChartState> {
       }
     })
 
-    loadData(this.props.url).then(points => {
+    void loadData(this.props.url).then(points => {
       this.setState({ points })
-      if (this.props.onDataLoaded) this.props.onDataLoaded(points)
+      if (this.props.onDataLoaded != null) this.props.onDataLoaded(points)
     })
   }
 
@@ -56,21 +56,21 @@ class Chart extends Component<ChartProps, ChartState> {
 
     if (startDate === undefined) {
       const initialFromDate = new Date()
-        	initialFromDate.setDate(new Date(this.state.points.slice(-1)[0].x).getDate() - 7)
+      initialFromDate.setDate(new Date(this.state.points.slice(-1)[0].x).getDate() - 7)
       startDate = initialFromDate
     }
 
     this.chartJS.data.datasets[0].data = this.state.points
     this.chartJS.options.scales.x.min = startDate
-    if (this.state.endDate) this.chartJS.options.scales.x.max = this.state.endDate
+    if (this.state.endDate !== undefined) this.chartJS.options.scales.x.max = this.state.endDate
     this.chartJS.update()
   }
 
-  render () {
+  render (): h.JSX.Element {
     return (
-			<div class={`chart ${this.props.class}`}>
-				<canvas ref={this.chart} role="img" />
-			</div>
+      <div class={`chart ${this.props.class ?? ''}`}>
+        <canvas ref={this.chart} role="img" />
+      </div>
     )
   }
 }

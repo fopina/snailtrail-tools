@@ -7,15 +7,15 @@ import Header from './header'
 
 import baseroute from '../baseroute'
 
-const App = () => (
-	<div id="app">
-		<Header />
-		<main>
-			<Router>
-				<Route path={`${baseroute}/`} component={Home} />
-			</Router>
-		</main>
-	</div>
+const App = (): h.JSX.Element => (
+    <div id="app">
+        <Header />
+        <main>
+            <Router>
+                <Route path={`${baseroute}/`} component={Home} />
+            </Router>
+        </main>
+    </div>
 )
 
 export default App
