@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useState, useRef } from 'preact/hooks';
 import style from './style.css';
-import Chart, { ChartExtra } from '../../components/chart';
+import Chart from '../../components/chart';
 import CopyButton from '../../components/copybutton';
 import { Point } from '../../utils/utils';
 
@@ -73,13 +73,13 @@ const Home = () => {
 				<Card title={`${lastValue  } %`}>
 					Last value ({lastDate})
 				</Card>
-				<Chart class={style.resource3} ref={chartBreed} label="Coefficient" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/log.bin" onDataLoaded={coefDataLoaded} />
+				<ChartCoef class={style.resource3} ref={chartBreed} label="Coefficient" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/log.bin" onDataLoaded={coefDataLoaded} />
 			</section>
 			<section>
 				<Card title={lastPopValue}>
 					Last value ({lastPopDate})
 				</Card>
-				<ChartExtra class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
+				<ChartPop class={style.resource3} ref={chartPopAlive} label="Current Pop" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.alive.bin" onDataLoaded={popDataLoaded} />
 			</section>
 			<section>
 				<Chart class={style.resource2} ref={chartPopDead} label="Burnt" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.dead.bin" />
@@ -131,5 +131,45 @@ const Card = (props: CardProps) => {
 		</div>
 	);
 };
+
+class ChartPop extends Chart {
+	componentDidMount(): void {
+		super.componentDidMount();
+		this.chartJS.data.datasets.push({label: "Drop Cap", data: [], borderColor: "red", backgroundColor: "red"});
+	}
+	componentDidUpdate(previousProps: Readonly<any>, previousState: Readonly<any>, snapshot: any): void {
+		super.componentDidUpdate(previousProps, previousState, snapshot);
+		if (this.state.points === undefined) return;
+		const points = this.state.points.map((p: Point) => {
+			return {x: p.x + 86400000, y: p.y + p.y * 0.2 / 30 }
+		});
+		console.log(this.state.points.slice(0, 2))
+		console.log(points.slice(0, 2))
+		this.chartJS.data.datasets[1].data = points;
+		this.chartJS.update();
+	}
+}
+
+class ChartCoef extends Chart {
+	componentDidMount(): void {
+		super.componentDidMount();
+		this.chartJS.data.datasets.push({label: "Drop Cap", data: [], borderColor: "red", backgroundColor: "red"});
+	}
+	componentDidUpdate(previousProps: Readonly<any>, previousState: Readonly<any>, snapshot: any): void {
+		super.componentDidUpdate(previousProps, previousState, snapshot);
+		if (this.state.points === undefined) return;
+		let lowest = Number.MAX_VALUE;
+		let last = 0;
+		const points = this.state.points.map((p: Point) => {
+			if (p.y < last) lowest = p.y;
+			last = p.y;
+			return {x: p.x + 86400000, y: lowest * 1.1}
+		});
+		console.log(this.state.points.slice(0, 2))
+		console.log(points.slice(0, 2))
+		this.chartJS.data.datasets[1].data = points;
+		this.chartJS.update();
+	}
+}
 
 export default Home;

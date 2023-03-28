@@ -76,23 +76,4 @@ class Chart extends Component<ChartProps, ChartState> {
 	}
 }
 
-
-export class ChartExtra extends Chart {
-	componentDidMount(): void {
-		super.componentDidMount();
-		this.chartJS.data.datasets.push({label: "Drop Cap", data: [], borderColor: "red", backgroundColor: "red"});
-	}
-	componentDidUpdate(previousProps: Readonly<any>, previousState: Readonly<ChartState>, snapshot: any): void {
-		super.componentDidUpdate(previousProps, previousState, snapshot);
-		if (this.state.points === undefined) return;
-		const points = this.state.points.map((p: Point) => {
-			return {x: p.x + 86400000, y: p.y + p.y * 0.2 / 30 }
-		});
-		console.log(this.state.points.slice(0, 2))
-		console.log(points.slice(0, 2))
-		this.chartJS.data.datasets[1].data = points;
-		this.chartJS.update();
-	}
-}
-
 export default Chart;
