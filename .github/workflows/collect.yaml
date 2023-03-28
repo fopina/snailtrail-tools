@@ -38,9 +38,8 @@ jobs:
         if: steps.check_pop.outcome == 'failure'
         run: |
           A=$(cat data/fail.pop.dat || echo 0)
-          echo $A
           B=$(expr $A \+ 1)
-          echo $B
+          echo $B fails in a row
           echo $B > data/fail.pop.dat
 
       - name: handle API 403 pass
@@ -64,7 +63,7 @@ jobs:
       - name: check failures
         run: |
           A=$(cat data/fail.pop.dat || echo 0)
-          if [ "$A" -gt "4" ]; then
+          if [ "$A" -gt "9" ]; then
               echo "TOO MANY FAILURES"
               exit 1
           fi
