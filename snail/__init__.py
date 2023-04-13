@@ -19,11 +19,7 @@ class Client:
 
     @cached_property
     def incubator_contract(self):
-        return self.web3.eth.contract(
-            address=self.web3.toChecksumAddress(CONTRACT_INCUBATOR), abi=abi.INCUBATOR
-        )
+        return self.web3.eth.contract(address=self.web3.toChecksumAddress(CONTRACT_INCUBATOR), abi=abi.INCUBATOR)
 
     def get_current_coefficent(self):
-        return self.incubator_contract.functions.getCurrentCoefficent().call(
-            {'from': self.wallet}
-        )
+        return self.incubator_contract.functions.getCurrentCoefficent().call({'from': self.wallet})

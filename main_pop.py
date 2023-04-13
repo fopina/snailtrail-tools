@@ -6,7 +6,6 @@ import struct
 from snail.gql import proxied_client
 
 
-
 def parser():
     p = argparse.ArgumentParser(prog=__name__)
     p.add_argument('-o', '--output', type=Path, help='output file to log timestamp and value')
