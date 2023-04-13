@@ -71,7 +71,6 @@ class Client(requests.Session):
         )
         r.raise_for_status()
         r = r.json()
-        print(r)
         if r.get('data') is None:
             raise Exception(r)
         problems = [v['problem'] for v in r['data'].values() if 'problem' in v]
