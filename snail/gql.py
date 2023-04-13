@@ -94,7 +94,19 @@ class Client(requests.Session):
 
 def proxied_client():
     c_id = subprocess.check_output(
-        ['docker', 'run', '--rm', '-dp', '9999:8888', 'fopina/random:snailtrail-gotls'], text=True
-    )
-    atexit.register(lambda: subprocess.check_output(['docker', 'kill', c_id.strip()]))
+        [
+            'docker',
+            'run',
+            '--rm',
+            '-dp',
+            '9999:8888',
+            'ghcr.io/fopina/gotlsproxy:0.1.10',
+            '-bind',
+            '0.0.0.0:8888',
+            'https://api.snailtrail.art/graphql/',
+        ],
+        text=True,
+    ).strip()
+    atexit.register(lambda: subprocess.check_output(['docker', 'kill', c_id]))
+    subprocess.check_output(['docker', 'inspect', '--format={{.State.ExitCode}}', c_id], text=True)
     return Client('http://127.0.0.1:9999/graphql')
