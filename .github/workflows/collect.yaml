@@ -26,6 +26,7 @@ jobs:
 
       - name: get coefficient
         run: |
+          echo "::notice file=main_burn.py,line=1,col=1,endColumn=2::Missing semicolon"
           echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
           python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
 
