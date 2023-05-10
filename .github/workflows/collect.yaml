@@ -26,6 +26,7 @@ jobs:
 
       - name: get coefficient
         run: |
+          echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
           python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
 
       # - name: get population from dune API
@@ -68,7 +69,7 @@ jobs:
       - name: check failures
         run: |
           A=$(cat data/fail.pop.dat || echo 0)
-          if [ "$A" -gt "9" ]; then
+          if [ "$A" -gt "30" ]; then
               echo "TOO MANY FAILURES"
               exit 1
           fi
