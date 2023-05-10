@@ -28,29 +28,29 @@ jobs:
         run: |
           python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
 
-      - name: get population
-        id: check_pop
-        run: |
-          python main_pop_dune.py --binary-log -o data/pop.bin
-
-      # - name: get population
+      # - name: get population from dune API
       #   id: check_pop
-      #   continue-on-error: true
       #   run: |
-      #     python main_pop.py --binary-log -o data/pop.bin
+      #     python main_pop_dune.py --binary-log -o data/pop.bin
 
-      # - name: handle API 403 fail
-      #   if: steps.check_pop.outcome == 'failure'
-      #   run: |
-      #     A=$(cat data/fail.pop.dat || echo 0)
-      #     B=$(expr $A \+ 1)
-      #     echo $B fails in a row
-      #     echo $B > data/fail.pop.dat
+      - name: get population from snails API
+        id: check_pop
+        continue-on-error: true
+        run: |
+          python main_pop.py --binary-log -o data/pop.bin
 
-      # - name: handle API 403 pass
-      #   if: steps.check_pop.outcome == 'success'
-      #   run: |
-      #     echo 0 > data/fail.pop.dat
+      - name: handle API 403 fail
+        if: steps.check_pop.outcome == 'failure'
+        run: |
+          A=$(cat data/fail.pop.dat || echo 0)
+          B=$(expr $A \+ 1)
+          echo $B fails in a row
+          echo $B > data/fail.pop.dat
+
+      - name: handle API 403 pass
+        if: steps.check_pop.outcome == 'success'
+        run: |
+          echo 0 > data/fail.pop.dat
 
       # - name: get burn coefficient
       #  run: |
@@ -68,7 +68,7 @@ jobs:
       - name: check failures
         run: |
           A=$(cat data/fail.pop.dat || echo 0)
-          if [ "$A" -gt "9" ]; then
+          if [ "$A" -gt "30" ]; then
               echo "TOO MANY FAILURES"
               exit 1
           fi
