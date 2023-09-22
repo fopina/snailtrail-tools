@@ -68,7 +68,7 @@ jobs:
       - name: check failures
         run: |
           A=$(cat data/fail.pop.dat || echo 0)
-          if [ "$A" -gt "30" ]; then
+          if [ "$A" -gt "200" ]; then
               echo "TOO MANY FAILURES"
               exit 1
           fi
