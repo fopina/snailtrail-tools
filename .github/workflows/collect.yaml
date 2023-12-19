@@ -34,7 +34,11 @@ jobs:
 
       - name: get mission slime pool
         run: |
-          python main_mission_slime_pool.py ${{ secrets.AVAX_URL }} --binary-log -o data/slimepool.bin
+          python main_mission_slime_pool.py 0x450324d8C9a7AbF3B1626D590cf4Beb48366D3B8 ${{ secrets.AVAX_URL }} --binary-log -o data/slimepool.bin
+
+      - name: get rewards vault pool
+        run: |
+          python main_mission_slime_pool.py 0x4ca36159eF7447A0EE9004237cD50b4469496738 ${{ secrets.AVAX_URL }} --binary-log -o data/rewardspool.bin
 
       # - name: get population from dune API
       #   id: check_pop

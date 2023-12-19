@@ -5,9 +5,11 @@ import struct
 from snail import Client
 
 MISSION_TREASURY = '0x450324d8C9a7AbF3B1626D590cf4Beb48366D3B8'
+REWARDS_VAULT = '0x4ca36159eF7447A0EE9004237cD50b4469496738'
 
 def parser():
     p = argparse.ArgumentParser(prog=__name__)
+    p.add_argument('contract', choices=(MISSION_TREASURY, REWARDS_VAULT))
     p.add_argument('avax_rpc_url')
     p.add_argument('-o', '--output', type=Path, help='output file to log timestamp and value')
     p.add_argument('--binary-log', action='store_true', help='Use binary format for log')
@@ -16,8 +18,8 @@ def parser():
 
 def main(argv=None):
     args = parser().parse_args(argv)
-    web3 = Client(MISSION_TREASURY, args.avax_rpc_url)
-    c = web3.balance_of(MISSION_TREASURY) / 10**18
+    web3 = Client(args.contract, args.avax_rpc_url)
+    c = web3.balance_of(args.contract) / 10**18
     print(f'Current slime balance: {c}')
     if args.output:
         c = int(c)
