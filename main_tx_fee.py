@@ -19,6 +19,7 @@ def main(argv=None):
     c = web3.web3.eth.gas_price
     print(f'Median tx fee (nAVAX): {c / 10**9}')
     if args.output:
+        c = int(c)
         now = datetime.utcnow()
         print(now)
         if args.binary_log:
