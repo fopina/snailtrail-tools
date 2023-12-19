@@ -32,6 +32,10 @@ jobs:
         run: |
           python main_tx_fee.py ${{ secrets.AVAX_URL }} --binary-log -o data/txfee.bin
 
+      - name: get mission slime pool
+        run: |
+          python main_mission_slime_pool.py ${{ secrets.AVAX_URL }} --binary-log -o data/slimepool.bin
+
       # - name: get population from dune API
       #   id: check_pop
       #   run: |

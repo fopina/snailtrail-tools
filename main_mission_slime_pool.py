@@ -4,6 +4,7 @@ from datetime import datetime
 import struct
 from snail import Client
 
+MISSION_TREASURY = '0x450324d8C9a7AbF3B1626D590cf4Beb48366D3B8'
 
 def parser():
     p = argparse.ArgumentParser(prog=__name__)
@@ -15,10 +16,9 @@ def parser():
 
 def main(argv=None):
     args = parser().parse_args(argv)
-    web3 = Client('', args.avax_rpc_url)
-    # in nAVAX
-    c = web3.web3.eth.gas_price / 10**9
-    print(f'Median tx fee (nAVAX): {c }')
+    web3 = Client(MISSION_TREASURY, args.avax_rpc_url)
+    c = web3.balance_of(MISSION_TREASURY) / 10**18
+    print(f'Current slime balance: {c}')
     if args.output:
         c = int(c)
         now = datetime.utcnow()
@@ -26,7 +26,7 @@ def main(argv=None):
         if args.binary_log:
             with args.output.open('ab') as f:
                 f.write(struct.pack('>I', int(now.timestamp())))
-                f.write(struct.pack('>H', c))
+                f.write(struct.pack('>I', c))
         else:
             with args.output.open('a') as f:
                 f.write(f'{now:%y-%m-%dT%H:%M:%S} {c}\n')
