@@ -27,6 +27,10 @@ jobs:
       - name: get coefficient
         run: |
           python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
+      
+      - name: get median tx fee
+        run: |
+          python main_tx_fee.py ${{ secrets.AVAX_URL }} --binary-log -o data/txfee.bin
 
       # - name: get population from dune API
       #   id: check_pop
