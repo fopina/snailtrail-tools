@@ -99,7 +99,7 @@ def proxied_client():
             '--rm',
             '-dp',
             '9999:8888',
-            'ghcr.io/fopina/gotlsproxy:0.1.10',
+            'ghcr.io/fopina/gotlsproxy:0.2',
             '-bind',
             '0.0.0.0:8888',
             'https://api.snailtrail.art/graphql/',
