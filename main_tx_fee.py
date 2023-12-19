@@ -16,8 +16,9 @@ def parser():
 def main(argv=None):
     args = parser().parse_args(argv)
     web3 = Client('', args.avax_rpc_url)
-    c = web3.web3.eth.gas_price
-    print(f'Median tx fee (nAVAX): {c / 10**9}')
+    # in nAVAX
+    c = web3.web3.eth.gas_price / 10**9
+    print(f'Median tx fee (nAVAX): {c }')
     if args.output:
         c = int(c)
         now = datetime.utcnow()
