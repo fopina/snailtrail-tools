@@ -67,10 +67,10 @@ jobs:
       - name: push data
         run: |
           cd data
-          git add log.bin pop.*.bin burn.bin fail.*.dat
+          git add *.bin fail.*.dat
           git config user.email updater@devnull.localhost
           git config user.name Updater
-          git commit log.bin pop.*.bin burn.bin fail.*.dat -m update
+          git commit *.bin fail.*.dat -m update
           git push
       
       - name: check failures
