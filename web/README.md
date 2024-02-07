@@ -17,3 +17,7 @@
   your tests
 
 For detailed explanation on how things work, checkout the [CLI Readme](https://github.com/developit/preact-cli/blob/master/README.md).
+
+## Notes
+
+If using node != 16, `export NODE_OPTIONS=--openssl-legacy-provider` is required, otherwise nodejs crypto will fail.

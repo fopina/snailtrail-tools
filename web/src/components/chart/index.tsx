@@ -14,6 +14,7 @@ interface ChartProps {
   label: string
   onDataLoaded?: (points: Point[]) => void
   class?: string
+  longBin?: boolean
 }
 
 class Chart extends Component<ChartProps, ChartState> {
@@ -44,7 +45,7 @@ class Chart extends Component<ChartProps, ChartState> {
       }
     })
 
-    void loadData(this.props.url).then(points => {
+    void loadData(this.props.url, this.props.longBin).then(points => {
       this.setState({ points })
       if (this.props.onDataLoaded != null) this.props.onDataLoaded(points)
     })
