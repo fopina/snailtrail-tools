@@ -10,12 +10,18 @@ const Home = (): h.JSX.Element => {
   const [lastDate, setLastDate] = useState('?')
   const [lastPopValue, setLastPopValue] = useState('?')
   const [lastPopDate, setLastPopDate] = useState('?')
+
   const startDateRef = useRef<HTMLInputElement>(null)
   const endDateRef = useRef<HTMLInputElement>(null)
+
   const chartBreed = useRef<Chart>()
   const chartPopAlive = useRef<Chart>()
   const chartPopDead = useRef<Chart>()
   const chartPopWorking = useRef<Chart>()
+
+  const chartTxFee = useRef<Chart>()
+  const chartRewardsPool = useRef<Chart>()
+  const chartSlimePool = useRef<Chart>()
 
   const coefDataLoaded = (points: Point[]): void => {
     const lastPoint = points.slice(-1)[0]
@@ -46,7 +52,7 @@ const Home = (): h.JSX.Element => {
   }
 
   const dateRangeChanged = (): void => {
-    [chartBreed, chartPopAlive, chartPopDead, chartPopWorking].forEach((chart) => {
+    [chartBreed, chartPopAlive, chartPopDead, chartPopWorking, chartTxFee, chartRewardsPool, chartSlimePool].forEach((chart) => {
       if (startDateRef.current && endDateRef.current) {
         chart.current?.setState({
           startDate: new Date(startDateRef.current.value),
@@ -87,6 +93,13 @@ const Home = (): h.JSX.Element => {
       <section>
         <Chart class={style.resource2} ref={chartPopDead} label="Burnt" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.dead.bin" />
         <Chart class={style.resource2} ref={chartPopWorking} label="Working" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/pop.working.bin" />
+      </section>
+      <section>
+        <Chart class={style.resource2} ref={chartTxFee} label="Avax Base Fee" url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/txfee.bin" />
+      </section>
+      <section>
+        <Chart class={style.resource2} ref={chartRewardsPool} label="Rewards Pool" longBin={true} url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/rewardspool.bin" />
+        <Chart class={style.resource2} ref={chartSlimePool} label="Slime Pool" longBin={true} url="https://raw.githubusercontent.com/fopina/snailtrail-tools/data/slimepool.bin" />
       </section>
       <section>
         <table>
