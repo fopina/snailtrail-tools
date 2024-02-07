@@ -20,4 +20,4 @@ For detailed explanation on how things work, checkout the [CLI Readme](https://g
 
 ## Notes
 
-To be able `export NODE_OPTIONS=--openssl-legacy-provider` is required, otherwise nodejs crypto will fail.
+If using node != 16, `export NODE_OPTIONS=--openssl-legacy-provider` is required, otherwise nodejs crypto will fail.
