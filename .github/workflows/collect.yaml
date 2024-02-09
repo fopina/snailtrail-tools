@@ -43,5 +43,7 @@ jobs:
         run: |
           cd csv-hosting
           git add *.csv
+          git config user.email updater@devnull.localhost
+          git config user.name Updater
           git commit *.csv -m 'CSVs updated'
           git push --force
