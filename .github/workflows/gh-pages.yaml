@@ -49,7 +49,7 @@ jobs:
 
       - run: |
           mkdir newbuild
-          cp mv build newbuild/old
+          mv build newbuild/old
           cp new-index.html newbuild/index.html
 
       - name: upload artifact
