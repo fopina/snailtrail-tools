@@ -48,8 +48,8 @@ jobs:
       - run: npm run build:gh
 
       - run: |
-          cp ./web/build/index.html ./web/build/index.old.html
-          cp ./web/new-index.html ./web/build/index.html
+          cp ./build/index.html ./build/index.old.html
+          cp ./new-index.html ./build/index.html
 
       - name: upload artifact
         uses: actions/upload-pages-artifact@v1
