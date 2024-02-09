@@ -48,13 +48,14 @@ jobs:
       - run: npm run build:gh
 
       - run: |
-          cp ./build/index.html ./build/index.old.html
-          cp ./new-index.html ./build/index.html
+          mkdir newbuild
+          cp mv build newbuild/old
+          cp new-index.html newbuild/index.html
 
       - name: upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./web/build
+          path: ./web/newbuild
  
       - name: Deploy
         uses: actions/deploy-pages@v1

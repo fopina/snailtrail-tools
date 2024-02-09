@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "cross-env preact build",
-    "build:gh": "GITHUB_PAGES=snailtrail-tools preact build && dot-json ./build/manifest.json start_url \"/snailtrail-tools/\"",
+    "build:gh": "GITHUB_PAGES=snailtrail-tools/old preact build && dot-json ./build/manifest.json start_url \"/snailtrail-tools/old/\"",
     "serve": "sirv build --cors --single",
     "dev": "cross-env preact watch",
     "lint": "eslint src",
