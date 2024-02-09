@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build
-        run: echo ${{ github.sha }} > Release.txt
+        run: echo XX ${{ github.sha }} > Release.txt
       - name: Test
         run: cat Release.txt
       - name: Release
