@@ -14,23 +14,15 @@ jobs:
         with:
           ref: data
           path: data
-      - uses: actions/checkout@v3
-        with:
-          ref: csv-hosting
-          path: csv-hosting
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
           cache: pip
-      
-      - name: Reset csv-hosting
-        run: |
-          cd csv-hosting
-          git reset --hard a6ccabfacd695d2293d8fda35bbdd53ed336d6c7
 
       - name: Convert all bin logs to csv
         run: |
+          mkdir csv-hosting
           ./tocsv.py data/pop.working.bin --output csv-hosting/pop.working.csv
           ./tocsv.py data/pop.alive.bin --output csv-hosting/pop.alive.csv
           ./tocsv.py data/pop.dead.bin --output csv-hosting/pop.dev.csv
@@ -42,8 +34,9 @@ jobs:
       - name: Push csv-hosting
         run: |
           cd csv-hosting
+          git init .
           git add *.csv
           git config user.email updater@devnull.localhost
           git config user.name Updater
           git commit *.csv -m 'CSVs updated'
-          git push --force
+          git push --force origin csv-hosting
