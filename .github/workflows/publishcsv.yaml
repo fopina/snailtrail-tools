@@ -29,7 +29,8 @@ jobs:
           git worktree add --orphan csv-hosting
           ./tocsv.py data/pop.working.bin --output csv-hosting/pop.working.csv
           ./tocsv.py data/pop.alive.bin --output csv-hosting/pop.alive.csv
-          ./tocsv.py data/pop.dead.bin --output csv-hosting/pop.dev.csv
+          ./tocsv.py data/pop.dead.bin --output csv-hosting/pop.dead.csv
+          ./tocsv.py data/txfee.bin --output csv-hosting/txfee.csv
           ./tocsv.py data/log.bin --output csv-hosting/breed.coef.csv
           ./tocsv.py data/burn.bin -l --output csv-hosting/burn.coef.csv
           ./tocsv.py data/slimepool.bin -l --output csv-hosting/slimepool.csv
