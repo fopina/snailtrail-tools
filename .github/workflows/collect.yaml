@@ -1,42 +1,86 @@
 name: collect
 
 on:
+  schedule:
+    # scheduling is unreliable - every minute means every 15 to 30min actually - good enough
+    - cron: "*/30 * * * *"
   workflow_dispatch:
     # allow manual triggering
 
 jobs:
-  build:
+  collect:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - uses: actions/checkout@v3
         with:
           ref: data
           path: data
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
           cache: pip
+      - run: pip install -r requirements.txt
 
-      - name: Convert all bin logs to csv
+      - name: get coefficient
         run: |
-          git worktree add --orphan csv-hosting
-          ./tocsv.py data/pop.working.bin --output csv-hosting/pop.working.csv
-          ./tocsv.py data/pop.alive.bin --output csv-hosting/pop.alive.csv
-          ./tocsv.py data/pop.dead.bin --output csv-hosting/pop.dev.csv
-          ./tocsv.py data/log.bin --output csv-hosting/breed.coef.csv
-          ./tocsv.py data/burn.bin -l --output csv-hosting/burn.coef.csv
-          ./tocsv.py data/slimepool.bin -l --output csv-hosting/slimepool.csv
-          ./tocsv.py data/rewardspool.bin -l --output csv-hosting/rewardpool.csv
+          python main.py ${{ secrets.WALLET }} ${{ secrets.AVAX_URL }} --binary-log -o data/log.bin
       
-      - name: Push csv-hosting
+      - name: get median tx fee
         run: |
-          cd csv-hosting
-          git init .
-          git add *.csv
+          python main_tx_fee.py ${{ secrets.AVAX_URL }} --binary-log -o data/txfee.bin
+
+      - name: get mission slime pool
+        run: |
+          python main_mission_slime_pool.py 0x450324d8C9a7AbF3B1626D590cf4Beb48366D3B8 ${{ secrets.AVAX_URL }} --binary-log -o data/slimepool.bin
+
+      - name: get rewards vault pool
+        run: |
+          python main_mission_slime_pool.py 0x4ca36159eF7447A0EE9004237cD50b4469496738 ${{ secrets.AVAX_URL }} --binary-log -o data/rewardspool.bin
+
+      # - name: get population from dune API
+      #   id: check_pop
+      #   run: |
+      #     python main_pop_dune.py --binary-log -o data/pop.bin
+
+      - name: get population from snails API
+        id: check_pop
+        continue-on-error: true
+        run: |
+          python main_pop.py --binary-log -o data/pop.bin
+
+      - name: handle API 403 fail
+        if: steps.check_pop.outcome == 'failure'
+        run: |
+          A=$(cat data/fail.pop.dat || echo 0)
+          B=$(expr $A \+ 1)
+          echo $B fails in a row
+          echo $B > data/fail.pop.dat
+
+      - name: handle API 403 pass
+        if: steps.check_pop.outcome == 'success'
+        run: |
+          echo 0 > data/fail.pop.dat
+
+      # - name: get burn coefficient
+      #  run: |
+      #    python main_burn.py ${{ secrets.BURN_TOKEN }} ${{ secrets.BURN_SIGN }} ${{ secrets.BURN_WALLET }} ${{ secrets.BURN_AUTH }} --binary-log -o data/burn.bin
+
+      - name: push data
+        run: |
+          cd data
+          git add *.bin fail.*.dat
           git config user.email updater@devnull.localhost
           git config user.name Updater
-          git commit *.csv -m 'CSVs updated'
-          git push --force origin csv-hosting
+          git commit *.bin fail.*.dat -m update
+          git push
+      
+      - name: check failures
+        run: |
+          A=$(cat data/fail.pop.dat || echo 0)
+          if [ "$A" -gt "200" ]; then
+              echo "TOO MANY FAILURES"
+              exit 1
+          fi

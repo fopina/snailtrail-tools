@@ -1,0 +1,46 @@
+name: Publish CSVs
+
+on:
+  workflow_dispatch:
+    # allow manual triggering
+  workflow_run:
+    workflows: [collect]
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          ref: data
+          path: data
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          cache: pip
+
+      - name: Convert all bin logs to csv
+        run: |
+          git worktree add --orphan csv-hosting
+          ./tocsv.py data/pop.working.bin --output csv-hosting/pop.working.csv
+          ./tocsv.py data/pop.alive.bin --output csv-hosting/pop.alive.csv
+          ./tocsv.py data/pop.dead.bin --output csv-hosting/pop.dev.csv
+          ./tocsv.py data/log.bin --output csv-hosting/breed.coef.csv
+          ./tocsv.py data/burn.bin -l --output csv-hosting/burn.coef.csv
+          ./tocsv.py data/slimepool.bin -l --output csv-hosting/slimepool.csv
+          ./tocsv.py data/rewardspool.bin -l --output csv-hosting/rewardpool.csv
+      
+      - name: Push csv-hosting
+        run: |
+          cd csv-hosting
+          git init .
+          git add *.csv
+          git config user.email updater@devnull.localhost
+          git config user.name Updater
+          git commit *.csv -m 'CSVs updated'
+          git push --force origin csv-hosting
