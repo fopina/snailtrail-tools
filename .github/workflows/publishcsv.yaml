@@ -31,7 +31,7 @@ jobs:
           ./tocsv.py data/pop.alive.bin --output csv-hosting/pop.alive.csv
           ./tocsv.py data/pop.dead.bin --output csv-hosting/pop.dead.csv
           ./tocsv.py data/txfee.bin --output csv-hosting/txfee.csv
-          ./tocsv.py data/log.bin --output csv-hosting/breed.coef.csv
+          ./tocsv_breed.py data/log.bin --output csv-hosting/breed.coef.csv
           ./tocsv.py data/burn.bin -l --output csv-hosting/burn.coef.csv
           ./tocsv.py data/slimepool.bin -l --output csv-hosting/slimepool.csv
           ./tocsv.py data/rewardspool.bin -l --output csv-hosting/rewardpool.csv

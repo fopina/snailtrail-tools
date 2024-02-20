@@ -13,25 +13,30 @@ def parser():
     return p
 
 
-def main(argv=None):
-    args = parser().parse_args(argv)
-    if args.output:
-        out = args.output.open('w')
-        out.write(f'time,value\n')
-    with args.binary_log.open('rb') as blog:
+def read_binary_log(binary_log: Path, long_field: bool):
+    with binary_log.open('rb') as blog:
         while True:
             tsb = blog.read(4)
             if not tsb:
                 break
             ts = struct.unpack('>I', tsb)[0]
             ts = datetime.fromtimestamp(ts)
-            if args.long_field:
+            if long_field:
                 val = struct.unpack('>I', blog.read(4))[0]
             else:
                 val = struct.unpack('>H', blog.read(2))[0]
-            if args.output:
-                out.write(f'{ts},{val}\n')
-            print(f'{ts},{val}')
+            yield ts, val
+
+
+def main(argv=None):
+    args = parser().parse_args(argv)
+    if args.output:
+        out = args.output.open('w')
+        out.write(f'time,value\n')
+    for ts, val in read_binary_log(args.binary_log, args.long_field):
+        if args.output:
+            out.write(f'{ts},{val}\n')
+        print(f'{ts},{val}')
     if args.output:
         out.close()
 
