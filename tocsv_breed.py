@@ -37,7 +37,7 @@ def main(argv=None):
         if val2 <= lowest:
             lowest = find_lowest(window24h, lowest)
         nval = lowest * 1.1
-        line = f'{ts2 + ONE_DAY},,{nval}'
+        line = f'{ts2 + ONE_DAY},{val},{nval}'
         if args.output:
             out.write(f'{line}\n')
         print(line)
