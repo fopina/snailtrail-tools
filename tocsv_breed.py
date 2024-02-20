@@ -15,7 +15,7 @@ def main(argv=None):
     args = tocsv.parser().parse_args(argv)
     if args.output:
         out = args.output.open('w')
-        out.write(f'time,value\n')
+        out.write(f'time,value,next_value\n')
     window24h = []
     lowest = MAX_LOWEST
     for ts, val in tocsv.read_binary_log(args.binary_log, False):
