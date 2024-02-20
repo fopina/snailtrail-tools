@@ -3,6 +3,7 @@ import tocsv
 from datetime import timedelta
 
 MAX_LOWEST = 99999999999999999
+ONE_DAY = timedelta(hours=24)
 
 
 def find_lowest(window, lowest):
@@ -20,7 +21,7 @@ def main(argv=None):
     lowest = MAX_LOWEST
     for ts, val in tocsv.read_binary_log(args.binary_log, False):
         window24h.append((ts, val))
-        while window24h and (ts - window24h[0][0] > timedelta(hours=24)):
+        while window24h and (ts - window24h[0][0] > ONE_DAY):
             _, val2 = window24h.pop(0)
             if val2 <= lowest:
                 lowest = MAX_LOWEST
@@ -36,7 +37,7 @@ def main(argv=None):
         if val2 <= lowest:
             lowest = find_lowest(window24h, lowest)
         nval = lowest * 1.1
-        line = f'{ts2},,{nval}'
+        line = f'{ts2 + ONE_DAY},,{nval}'
         if args.output:
             out.write(f'{line}\n')
         print(line)
